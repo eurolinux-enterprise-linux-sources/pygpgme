@@ -7,7 +7,7 @@
 
 Name:           pygpgme
 Version:        0.3
-Release:        6%{?dist}
+Release:        9%{?dist}
 Summary:        Python module for working with OpenPGP messages
 
 Group:          Development/Languages
@@ -81,18 +81,6 @@ popd
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%check
-### Can't run the tests unconditionally because they depend on importing a private key.
-# gpg2 on which our gpgme library depends does not import private keys so this
-# won't work.  The issue in the real world is not so big as we  don't
-# manipulate private keys outside of a keyring that often.
-# We'll run this and ignore errors so we can manually look for problems more easily
-# Use the installed gpgme because it has the built compiled module
-mv gpgme gpgme.bak
-ln -s $RPM_BUILD_ROOT%{python_sitearch}/gpgme .
-make check || :
-find tests -name '*.pyc' -delete
-
 %files
 %defattr(-,root,root,-)
 %doc README PKG-INFO examples tests
@@ -106,6 +94,16 @@ find tests -name '*.pyc' -delete
 %endif # with_python3
 
 %changelog
+* Thu Feb 13 2014 Miloslav Trmač <mitr@redhat.com> - 0.3-9
+- Drop %%check to avoid a hang in pinentry-curses >= 0.8.1-12
+  Resolves: #1064349
+
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 0.3-8
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 0.3-7
+- Mass rebuild 2013-12-27
+
 * Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 0.3-6
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
 
@@ -139,7 +137,7 @@ find tests -name '*.pyc' -delete
 * Fri Feb 11 2011 Toshio Kuratomi <toshio@fedoraproject.org> - 22.20101027bzr69
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild 
 
-* Tue Oct 27 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 21.20101027bzr69
+* Wed Oct 27 2010 Toshio Kuratomi <toshio@fedoraproject.org> - 21.20101027bzr69
 - New snapshot to fix BZ#647059: pygpgme error creating context on F14.
 
 * Wed Jul 21 2010 David Malcolm <dmalcolm@redhat.com> - 0.1-20.20090824bzr68
